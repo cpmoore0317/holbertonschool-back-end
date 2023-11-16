@@ -7,37 +7,38 @@ import requests
 import sys
 
 
-def get_employee_data(employee_id):
-    # Make a request to the API to get employee data
-    url = f'https://jsonplaceholder.typicode.com/users/{employee_id}'
-    response = requests.get(url)
-    employee_data = response.json()
-    return employee_data
+import json
+import urllib.request
+from sys import argv
 
+def get_todo_data(user_id):
+    api_url = 'https://jsonplaceholder.typicode.com'
+    url = f'{api_url}/users/{user_id}/todos?_expand=user'
 
-def get_todo_list(employee_id):
-    # Make a request to the API to get TODO list data
-    url = f'https://jsonplaceholder.typicode.com/todos?userId={employee_id}'
-    response = requests.get(url)
-    todo_list = response.json()
-    return todo_list
-
+    with urllib.request.urlopen(url) as response:
+        if response.getcode() == 200:
+            return json.loads(response.read())
+        else:
+            print(f"Error: {response.getcode()}")
+            return None
 
 def main():
-    # Get employee ID from command line arguments
-    if len(sys.argv) != 2:
-        print("Usage: python gather_data_from_an_API.py <employee_id>")
-        sys.exit(1)
+    if len(argv) != 2:
+        print("Usage: python script.py <user_id>")
+        return
 
-    employee_id = int(sys.argv[1])
+    user_id = argv[1]
+    todo_data = get_todo_data(user_id)
 
-    # Get employee data and TODO list
-    employee_data = get_employee_data(employee_id)
-    todo_list = get_todo_list(employee_id)
+    if todo_data:
+        employee_name = todo_data[0]['user']['name']
+        completed_tasks = [task for task in todo_data if task['completed']]
+        num_completed_tasks = len(completed_tasks)
+        total_tasks = len(todo_data)
 
-    # Process and display the information
-    # ...
+        print(f"Employee {employee_name} is done with tasks ({num_completed_tasks}/{total_tasks}):")
+        for task in completed_tasks:
+            print(f"\t{task['title']}")
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

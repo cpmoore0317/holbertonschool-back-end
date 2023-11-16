@@ -4,8 +4,8 @@ For a given employee ID,
 returns information about his/her TODO list progress.
 """
 import json
-import requests
 from sys import argv
+import requests
 
 if __name__ == '__main__':
     # Base URL for the JSONPlaceholder API
@@ -19,7 +19,7 @@ if __name__ == '__main__':
 
     if response.status_code == 200:
         # Load JSON data from the response
-        todo_data = json.loads(response.text)
+        todo_data = response.json()
 
         # Extract employee name from the first task
         employee_name = todo_data[0]['user']['name']
@@ -30,9 +30,7 @@ if __name__ == '__main__':
         total_tasks = len(todo_data)
 
         # Display the summary
-        first_line = (
-            f"Employee {employee_name} is done with tasks"
-            f"({num_completed_tasks}/{total_tasks}):")
+        first_line = f"Employee {employee_name} is done with tasks ({num_completed_tasks}/{total_tasks}):"
         print(first_line)
 
         for task in completed_tasks:

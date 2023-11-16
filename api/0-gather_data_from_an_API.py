@@ -3,10 +3,6 @@
 For a given employee ID,
 returns information about his/her TODO list progress.
 """
-import requests
-import sys
-
-
 import json
 import urllib.request
 from sys import argv

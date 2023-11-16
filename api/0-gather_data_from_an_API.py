@@ -6,6 +6,7 @@ returns information about his/her TODO list progress.
 import requests
 import sys
 
+
 def get_employee_todo_progress(employee_id):
     # API URLs
     users_url = "https://jsonplaceholder.typicode.com/users"

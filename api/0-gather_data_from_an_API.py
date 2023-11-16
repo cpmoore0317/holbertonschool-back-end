@@ -4,33 +4,38 @@ For a given employee ID,
 returns information about his/her TODO list progress.
 """
 import requests
-import sys
+import json
+from sys import argv
 
-def get_employee_todo_progress(employee_id):
-    # Replace 'API_URL' with the actual API URL
-    api_url = 'https://jsonplaceholder.typicode.com/todos?userId=' + str(employee_id)
+if __name__ == '__main__':
+    # Base URL for the JSONPlaceholder API
+    base_api_url = 'https://jsonplaceholder.typicode.com'
 
-    response = requests.get(api_url)
+    # Retrieve user ID from command-line arguments
+    target_user_id = argv[1]
+
+    # Make a request to the API to fetch the to-do list for the specified user
+    response = requests.get(f'{base_api_url}/users/{target_user_id}/todos?_expand=user')
+
     if response.status_code == 200:
-        todo_list = response.json()
+        # Load JSON data from the response
+        todo_data = json.loads(response.text)
 
-        completed_tasks = list(filter(lambda task: task['completed'], todo_list))
-        total_tasks = len(todo_list)
-        done_tasks_count = len(completed_tasks)
+        # Extract employee name from the first task
+        employee_name = todo_data[0]['user']['name']
 
-        print(f"Employee {completed_tasks[0]['user']['name']} is done with tasks({done_tasks_count}/{total_tasks}):")
+        # Filter completed tasks
+        completed_tasks = [task for task in todo_data if task['completed']]
+        num_completed_tasks = len(completed_tasks)
+        total_tasks = len(todo_data)
+
+        # Display the summary
+        first_line = (
+            f"Employee {employee_name} is done with tasks"
+            f"({num_completed_tasks}/{total_tasks}):")
+        print(first_line)
 
         for task in completed_tasks:
-            task_title = task['title']
-            print(f"\t {task_title}")
-
+            print(f"\t {task['title']}")
     else:
-        print(f"Error fetching employee TODO list progress: {response.status_code}")
-
-if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python3 0-gather_data_from_an_API.py <employee_id>")
-        exit(1)
-
-    employee_id = int(sys.argv[1])
-    get_employee_todo_progress(employee_id)
+        print(f"Error: {response.status_code}")

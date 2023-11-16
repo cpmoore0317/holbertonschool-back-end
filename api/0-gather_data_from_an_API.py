@@ -4,7 +4,7 @@ For a given employee ID,
 returns information about his/her TODO list progress.
 """
 import requests
-
+import sys
 
 def get_employee_todo_progress(employee_id):
     # Replace 'API_URL' with the actual API URL

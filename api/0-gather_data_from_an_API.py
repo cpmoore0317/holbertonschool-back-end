@@ -1,10 +1,11 @@
 #!/usr/bin/python3
 """
-For a given employee ID, 
+For a given employee ID,
 returns information about his/her TODO list progress.
 """
 import requests
 import sys
+
 
 def get_employee_data(employee_id):
     # Make a request to the API to get employee data
@@ -13,12 +14,14 @@ def get_employee_data(employee_id):
     employee_data = response.json()
     return employee_data
 
+
 def get_todo_list(employee_id):
     # Make a request to the API to get TODO list data
     url = f'https://jsonplaceholder.typicode.com/todos?userId={employee_id}'
     response = requests.get(url)
     todo_list = response.json()
     return todo_list
+
 
 def main():
     # Get employee ID from command line arguments
@@ -34,6 +37,7 @@ def main():
 
     # Process and display the information
     # ...
+
 
 if __name__ == "__main__":
     main()

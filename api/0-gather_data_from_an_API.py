@@ -18,7 +18,7 @@ def get_employee_todo_progress(employee_id):
 
     if not employee_name:
         print(f"Error: Employee with ID {employee_id} not found.")
-        return
+        return None
 
     # Fetch tasks information
     todos_resp = requests.get(todos_url).json()
@@ -30,6 +30,9 @@ def get_employee_todo_progress(employee_id):
     for todo in todos_resp:
         if todo['userId'] == employee_id and todo['completed']:
             print(f"    {todo['title']}")
+
+    return employee_name
+
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:

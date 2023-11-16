@@ -7,6 +7,27 @@ import requests
 import sys
 
 
+def first_line(id):
+    """ Fetch user name """
+
+    resp = requests.get(users_url).json()
+
+    name = None
+    for i in resp:
+        if i['id'] == id:
+            name = i['name']
+
+    filename = 'student_output'
+
+    with open(filename, 'r') as f:
+        first = f.readline().strip()
+
+    if name and name.strip() in first:
+        print("Employee Name: OK")
+    else:
+        print("Employee Name: Incorrect")
+
+
 def get_employee_todo_progress(employee_id):
     # API URLs
     users_url = "https://jsonplaceholder.typicode.com/users"

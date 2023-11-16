@@ -3,38 +3,45 @@
 For a given employee ID,
 returns information about his/her TODO list progress.
 """
-import json
 import requests
+import json
 from sys import argv
 
+def get_completed_tasks(user_id):
+    """Returns a list of completed tasks for a given user ID."""
+    base_api_url = 'https://jsonplaceholder.typicode.com'
+    url = f'{base_api_url}/users/{user_id}/todos?_expand=user'
+
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+    except requests.exceptions.HTTPError as e:
+        print(f"Error: {e}")
+        return None
+
+    todo_data = json.loads(response.text)
+    completed_tasks = [task for task in todo_data if task['completed']]
+    return completed_tasks
 
 if __name__ == '__main__':
-    # Base URL for the JSONPlaceholder API
-    base_api_url = 'https://jsonplaceholder.typicode.com'
+    if len(argv) != 2:
+        print("Usage: get_completed_tasks.py <user_id>")
+        exit(1)
 
-    # Retrieve user ID from command-line arguments
-    target_user_id = argv[1]
+    user_id = argv[1]
+    completed_tasks = get_completed_tasks(user_id)
 
-    # Make a request to the API to fetch the to-do list for the specified user
-    response = requests.get(f'{base_api_url}/users/{target_user_id}/todos?_expand=user')
+    if completed_tasks is None:
+        exit(1)
 
-    if response.status_code == 200:
-        # Load JSON data from the response
-        todo_data = response.json()
+    employee_name = completed_tasks[0]['user']['name']
+    num_completed_tasks = len(completed_tasks)
+    total_tasks = len(todo_data)
 
-        # Extract employee name from the first task
-        employee_name = todo_data[0]['user']['name']
+    first_line = (
+        f"Employee {employee_name} is done with tasks"
+        f"({num_completed_tasks}/{total_tasks}):")
+    print(first_line)
 
-        # Filter completed tasks
-        completed_tasks = [task for task in todo_data if task['completed']]
-        num_completed_tasks = len(completed_tasks)
-        total_tasks = len(todo_data)
-
-        # Display the summary
-        first_line = f"Employee {employee_name} is done with tasks ({num_completed_tasks}/{total_tasks}):"
-        print(first_line)
-
-        for task in completed_tasks:
-            print(f"\t {task['title']}")
-    else:
-        print(f"Error: {response.status_code}")
+    for task in completed_tasks:
+        print(f"\t {task['title']}")

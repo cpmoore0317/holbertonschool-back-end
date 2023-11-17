@@ -29,16 +29,14 @@ def get_employee_progress(employee_id):
     employee_name = employee_info.get("name")
 
     # Filter completed tasks from the todo list
-    completed_tasks = [task["title"] for task in todo_list
-                       if task["completed"]]
+    completed_tasks = [task["title"] for task in todo_list if task["completed"]]
 
     # Calculate the number of completed and total tasks
     number_completed = len(completed_tasks)
     number_total = len(todo_list)
 
     # Display the employee's task progress
-    print(f"Employee {employee_name} is done with tasks
-          ({number_completed}/{number_total}):")
+    print(f"Employee {employee_name} is done with tasks({number_completed}/{number_total}):")
 
     # Display each completed task
     for task in completed_tasks:

@@ -13,14 +13,17 @@ def get_employee_progress(employee_id):
     todo_endpoint = f"{base_url}/todos"
 
     user_data = requests.get(user_endpoint).json()
-    todo_data = requests.get(todo_endpoint, params={"userId": employee_id}).json()
+    todo_data = requests.get(todo_endpoint,
+                             params={"userId": employee_id}).json()
 
     employee_name = user_data.get("name")
-    completed_tasks = [task["title"] for task in todo_data if task["completed"]]
+    completed_tasks = [task["title"] for task in todo_data 
+                       if task["completed"]]
     num_completed_tasks = len(completed_tasks)
     total_tasks = len(todo_data)
 
-    print(f"Employee {employee_name} has completed {num_completed_tasks}/{total_tasks} tasks:")
+    print(f"Employee {employee_name} has completed 
+          {num_completed_tasks}/{total_tasks} tasks:")
     for task in completed_tasks:
         print(f"\t{task}")
 

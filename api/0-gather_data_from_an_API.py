@@ -3,46 +3,34 @@
 For a given employee ID,
 returns information about his/her TODO list progress.
 """
-import json
 import requests
-from sys import argv
 
 
-def get_completed_tasks(user_id):
-    """Returns a list of completed tasks for a given user ID."""
-    base_api_url = 'https://jsonplaceholder.typicode.com'
-    url = f'{base_api_url}/users/{user_id}/todos?_expand=user'
+def get_employee_progress(employee_id):
+    """ Display the employee's todo list progress """
+    base_url = "https://jsonplaceholder.typicode.com"
+    user_endpoint = f"{base_url}/users/{employee_id}"
+    todo_endpoint = f"{base_url}/todos"
 
-    try:
-        response = requests.get(url)
-        response.raise_for_status()
-    except requests.exceptions.HTTPError as e:
-        print(f"Error: {e}")
-        return None
+    user_data = requests.get(user_endpoint).json()
+    todo_data = requests.get(todo_endpoint, params={"userId": employee_id}).json()
 
-    todo_data = json.loads(response.text)
-    completed_tasks = [task for task in todo_data if task['completed']]
-    return completed_tasks
-
-if __name__ == '__main__':
-    if len(argv) != 2:
-        print("Usage: get_completed_tasks.py <user_id>")
-        exit(1)
-
-    user_id = argv[1]
-    completed_tasks = get_completed_tasks(user_id)
-
-    if completed_tasks is None:
-        exit(1)
-
-    employee_name = completed_tasks[0]['user']['name']
+    employee_name = user_data.get("name")
+    completed_tasks = [task["title"] for task in todo_data if task["completed"]]
     num_completed_tasks = len(completed_tasks)
     total_tasks = len(todo_data)
 
-    first_line = (
-        f"Employee {employee_name} is done with tasks"
-        f"({num_completed_tasks}/{total_tasks}):")
-    print(first_line)
-
+    print(f"Employee {employee_name} has completed {num_completed_tasks}/{total_tasks} tasks:")
     for task in completed_tasks:
-        print(f"\t {task['title']}")
+        print(f"\t{task}")
+
+
+if __name__ == "__main__":
+    import sys
+
+    if len(sys.argv) != 2:
+        print("Usage: python script.py <employee_id>")
+        sys.exit(1)
+
+    employee_id = int(sys.argv[1])
+    get_employee_progress(employee_id)

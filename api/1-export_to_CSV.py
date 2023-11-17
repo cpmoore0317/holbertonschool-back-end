@@ -7,15 +7,10 @@ Exports data into the CSV format.
 """
 import requests
 import sys
+import csv
 
 
 def get_employee_progress(employee_id):
-    """
-    Retrieve and display the progress of an employee's completed tasks.
-
-    Args:
-    - employee_id (int): The ID of the employee.
-    """
     # API endpoint
     base_url = "https://jsonplaceholder.typicode.com"
 
@@ -28,21 +23,26 @@ def get_employee_progress(employee_id):
     todo_list = requests.get(todo_url, params={"userId": employee_id}).json()
 
     # Extract relevant information from employee data
-    employee_name = employee_info.get("name")
+    user_id = employee_info.get("id")
+    user_name = employee_info.get("name")
 
-    # Filter completed tasks from the todo list
-    completed_tasks = [task["title"] for task in todo_list if task["completed"]]
+    # Create a CSV file with the user_id as the filename
+    csv_filename = f"{user_id}.csv"
 
-    # Calculate the number of completed and total tasks
-    number_completed = len(completed_tasks)
-    number_total = len(todo_list)
+    # Open the CSV file for writing
+    with open(csv_filename, mode='w', newline='') as csv_file:
+        csv_writer = csv.writer(csv_file, quoting=csv.QUOTE_MINIMAL)
+  
+        # Write the header
+        csv_writer.writerow(["USER_ID", "USERNAME", "TASK_COMPLETED_STATUS", "TASK_TITLE"])
 
-    # Display the employee's task progress
-    print(f"Employee {employee_name} is done with tasks({number_completed}/{number_total}):")
+        # Write each task to the CSV file
+        for task in todo_list:
+            task_completed = str(task["completed"])
+            task_title = task["title"]
+            csv_writer.writerow([user_id, user_name, task_completed, task_title])
 
-    # Display each completed task
-    for task in completed_tasks:
-        print(f"\t {task}")
+    print(f"Data exported to {csv_filename}")
 
 
 if __name__ == "__main__":

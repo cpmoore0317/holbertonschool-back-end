@@ -29,21 +29,18 @@ def get_employee_progress(employee_id):
     employee_name = employee_info.get("name")
 
     # Filter completed tasks from the todo list
-    completed_tasks = [task["title"] for task in
-                       todo_list if task["completed"]]
+    completed_tasks = [task["title"] for task in todo_list if task["completed"]]
 
     # Calculate the number of completed and total tasks
     number_completed = len(completed_tasks)
     number_total = len(todo_list)
 
     # Display the employee's task progress
-    print(f"Employee {employee_name} has completed
-          {number_completed}/{number_total} tasks: ")
+    print(f"Employee {employee_name} has completed {number_completed}/{number_total} tasks:")
 
     # Display each completed task
     for task in completed_tasks:
         print(f"\t {task}")
-
 
 if __name__ == "__main__":
     # Check if an employee ID is provided as a command-line argument

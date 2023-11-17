@@ -39,9 +39,6 @@ def export_tasks_to_csv(user_id):
         # Create a CSV writer object
         file_writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
 
-        # Write header row
-        file_writer.writerow(['User ID', 'Name', 'Task Status', 'Task'])
-
         # Write data rows
         for task, done_status in tasks.items():
             file_writer.writerow([user_id, name, done_status, task])

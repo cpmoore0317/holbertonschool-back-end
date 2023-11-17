@@ -6,16 +6,17 @@ returns information about his/her TODO list progress.
 import requests
 import sys
 
-def get_employee_todo_progress(employee_id):
+
+def get_employee_progress(employee_id):
     """
     Retrieve and display the progress of an employee's completed tasks.
-    
+
     Args:
     - employee_id (int): The ID of the employee.
     """
     # API endpoint
     base_url = "https://jsonplaceholder.typicode.com"
-    
+
     # Construct URLs for employee and todo data
     employee_url = f"{base_url}/users/{employee_id}"
     todo_url = f"{base_url}/todos"
@@ -28,15 +29,17 @@ def get_employee_todo_progress(employee_id):
     employee_name = employee_info.get("name")
 
     # Filter completed tasks from the todo list
-    completed_tasks = [task["title"] for task in todo_list if task["completed"]]
+    completed_tasks = [task["title"] for task in 
+                       todo_list if task["completed"]]
 
     # Calculate the number of completed and total tasks
     number_completed = len(completed_tasks)
     number_total = len(todo_list)
 
     # Display the employee's task progress
-    print(f"Employee {employee_name} has completed {number_completed}/{number_total} tasks:")
-    
+    print(f"Employee {employee_name} has completed 
+          {number_completed}/{number_total} tasks:")
+
     # Display each completed task
     for task in completed_tasks:
         print(f"\t {task}")
@@ -49,4 +52,4 @@ if __name__ == "__main__":
 
     # Call the function with the provided employee ID
     employee_id = int(sys.argv[1])
-    get_employee_todo_progress(employee_id)
+    get_employee_progress(employee_id)

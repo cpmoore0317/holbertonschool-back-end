@@ -7,6 +7,7 @@ import json
 import requests
 from sys import argv
 
+
 def get_completed_tasks(user_id):
     """Returns a list of completed tasks for a given user ID."""
     base_api_url = 'https://jsonplaceholder.typicode.com'

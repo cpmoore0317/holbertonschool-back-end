@@ -36,7 +36,7 @@ def get_employee_progress(employee_id):
     number_total = len(todo_list)
 
     # Display the employee's task progress
-    print(f"Employee {employee_name} has completed {number_completed}/{number_total} tasks:")
+    print(f"Employee {employee_name} is done with tasks({number_completed}/{number_total}):")
 
     # Display each completed task
     for task in completed_tasks:

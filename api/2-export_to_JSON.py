@@ -34,7 +34,7 @@ def export_progress_to_json(employee_id):
     # Filter completed tasks from the todo list
     completed_tasks = [
         {
-            "task: task["title"],
+            "task": task["title"],
             "completed": task["completed"],
             "username": employee_info["username"],
         }

@@ -3,75 +3,64 @@
 For a given employee ID,
 returns information about his/her TODO list progress.
 """
-import requests
-import sys
 import json
+import requests
 
 
-def get_employee_progress(employee_id):
-    """
-    Retrieve and display the progress of an employee's completed tasks.
+def fetch_user_data(user_id):
+    """Fetch user data from the API"""
+    base_url = 'https://jsonplaceholder.typicode.com'
+    todo_url = f"{base_url}/users/{user_id}/todos"
+    employee_url = f"{base_url}/users/{user_id}"
 
-    Args:
-    - employee_id (int): The ID of the employee.
-    """
-    # API endpoint
-    base_url = "https://jsonplaceholder.typicode.com"
+    # Fetching user and todo data
+    users_response = requests.get(employee_url)
+    todo_response = requests.get(todo_url)
 
-    # Construct URLs for employee and todo data
-    employee_url = f"{base_url}/users/{employee_id}"
-    todo_url = f"{base_url}/todos"
-
-    # Retrieve employee and todo data from the API
-    employee_info = requests.get(employee_url).json()
-    todo_list = requests.get(todo_url, params={"userId": employee_id}).json()
-
-    # Extract relevant information from employee data
-    employee_name = employee_info.get("username")
-
-    # Filter completed tasks from the todo list
-    completed_tasks = [
-        {"username": employee_name, "task": task["title"], "completed": task["completed"]}
-        for task in todo_list
-    ]
-
-    return completed_tasks
+    # Checking if requests were successful
+    if users_response.status_code != 200 or todo_response.status_code != 200:
+        return None, None
+    
+    employee_data = users_response.json()
+    todo_data = todo_response.json()
+    
+    return employee_data, todo_data
 
 
-def export_all_employees():
-    """
-    Export data in JSON format for all employees and save it to a file.
-    """
-    # Number of employees (you may change it based on your actual data)
-    num_employees = 10
+def create_user_dict(user_id, name, tasks):
+    """Creates a dictionary for a user"""
+    return {
+        user_id: [
+            {
+                'username': name,
+                'task': task,
+                'completed': task_status
+            }
+            for task, task_status in tasks.items()
+        ]
+    }
 
-    # Create a dictionary to store data for all employees
-    all_employees_data = {}
+def dict_of_dicts():
+    """Gathering data from the API and exporting to JSON."""
+    all_dict = {}
 
-    # Loop through all employee IDs
-    for employee_id in range(1, num_employees + 1):
-        employee_data = get_employee_progress(employee_id)
-        all_employees_data[str(employee_id)] = employee_data
+    for user_id in range(1, 11):
+        employee_data, todo_data = fetch_user_data(user_id)
 
-    # Write the data to a JSON file
-    with open("todo_all_employees.json", "w") as json_file:
-        json.dump(all_employees_data, json_file)
+        # Skip if the API request was unsuccessful
+        if employee_data is None or todo_data is None:
+            print(f"Failed to fetch data for user {user_id}")
+            continue
+
+        name = employee_data.get("username")
+        tasks = {task["title"]: task['completed'] for task in todo_data}
+
+        new_dict = create_user_dict(user_id, name, tasks)
+        all_dict.update(new_dict)
+
+    with open("todo_all_employees.json", "w") as newfile:
+        json.dump(all_dict, newfile)
 
 
 if __name__ == "__main__":
-    # Check if an employee ID is provided as a command-line argument
-    if len(sys.argv) != 2:
-        print("Usage: python script.py <employee_id>")
-        sys.exit(1)
-
-    # Call the function with the provided employee ID
-    employee_id = int(sys.argv[1])
-    employee_progress = get_employee_progress(employee_id)
-
-    # Display the employee's task progress
-    print(f"Employee {employee_progress[0]['username']} is done with tasks:")
-    for task in employee_progress:
-        print(f"\t {task['task']}")
-
-    # Export data for all employees
-    export_all_employees()
+    dict_of_dicts()

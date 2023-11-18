@@ -20,10 +20,10 @@ def fetch_user_data(user_id):
     # Checking if requests were successful
     if users_response.status_code != 200 or todo_response.status_code != 200:
         return None, None
-    
+
     employee_data = users_response.json()
     todo_data = todo_response.json()
-    
+
     return employee_data, todo_data
 
 
@@ -39,6 +39,7 @@ def create_user_dict(user_id, name, tasks):
             for task, task_status in tasks.items()
         ]
     }
+
 
 def dict_of_dicts():
     """Gathering data from the API and exporting to JSON."""

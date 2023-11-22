@@ -36,9 +36,9 @@ def create_user_dict(user_id, name, tasks):
             {
                 'username': name,
                 'task': task,
-                'completed': task_status
+                #'completed': task_status
             }
-            for task, task_status in tasks.items()
+            for task in tasks.items()
         ]
     }
 
